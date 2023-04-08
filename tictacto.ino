@@ -65,6 +65,12 @@ void press(int row, int column, int player) {
 }
 
 void createBoard() {
+  lcds[0].setCursor(0, 0);
+  lcds[0].print("                ");
+  lcds[0].setCursor(0, 1);
+  lcds[0].print("                ");
+  
+  
   lcds[1].print("    |     |");
   lcds[1].setCursor(0, 1);
   lcds[1].print("    |     |");
@@ -99,6 +105,87 @@ void createBoard() {
   
 }
 
+int binaryToInt(String binary) {
+  int value = 0;
+  for (int i=0; i<binary.length(); i++)  // for every character in the string  strlen(s) returns the length of a char array
+  {
+    value *= 2; // double the result so far
+    if (binary[i] == '1') value++;  //add 1 if needed
+  }
+  
+  return value;
+}
+
+void inputValue(int value, char symbol) {
+  
+  switch(value) {
+    case 0:
+    	board[0][0] = symbol;
+    	lcds[row[0]].setCursor(0, 1);
+    	lcds[row[0]].print("    ");
+    	lcds[row[0]].setCursor(column[0], 1);
+    	lcds[row[0]].print(symbol);
+        break;
+    case 1:
+    	board[0][1] = symbol;
+    	lcds[row[0]].setCursor(6, 1);
+    	lcds[row[0]].print("    ");
+    	lcds[row[0]].setCursor(column[1], 1);
+    	lcds[row[0]].print(symbol);
+        break;
+    case 2:
+    	board[0][2] = symbol;
+    	lcds[row[0]].setCursor(12, 1);
+    	lcds[row[0]].print("    ");
+    	lcds[row[0]].setCursor(column[2], 1);
+    	lcds[row[0]].print(symbol);
+        break;
+    case 3:
+    	board[1][0] = symbol;
+    	lcds[row[1]].setCursor(0, 1);
+    	lcds[row[1]].print("    ");
+    	lcds[row[1]].setCursor(column[0], 1);
+    	lcds[row[1]].print(symbol);
+        break;
+    case 4:
+    	board[1][1] = symbol;
+    	lcds[row[1]].setCursor(6, 1);
+    	lcds[row[1]].print("    ");
+    	lcds[row[1]].setCursor(column[1], 1);
+    	lcds[row[1]].print(symbol);
+        break;
+    case 5:
+    	board[1][2] = symbol;
+    	lcds[row[1]].setCursor(12, 1);
+    	lcds[row[1]].print("    ");
+    	lcds[row[1]].setCursor(column[2], 1);
+    	lcds[row[1]].print(symbol);
+        break;
+    case 6:
+    	board[2][0] = symbol;
+    	lcds[row[2]].setCursor(0, 1);
+    	lcds[row[2]].print("    ");
+    	lcds[row[2]].setCursor(column[0], 1);
+    	lcds[row[2]].print(symbol);
+        break;
+    case 7:
+    	board[2][1] = symbol;
+    	lcds[row[2]].setCursor(6, 1);
+    	lcds[row[2]].print("    ");
+    	lcds[row[2]].setCursor(column[1], 1);
+    	lcds[row[2]].print(symbol);
+        break;
+    case 8:
+    	board[2][2] = symbol;
+    	lcds[row[2]].setCursor(12, 1);
+    	lcds[row[2]].print("    ");
+    	lcds[row[2]].setCursor(column[2], 1);
+    	lcds[row[2]].print(symbol);
+        break;
+  }
+}
+
+
 
 
 void setup(){
@@ -127,32 +214,83 @@ int buttonState = 0;
 
 String binary = "";
 
+String player[] = {"Player 1", "Player 2"};
+int i = 0;
+char symbol = 'X';
+
 void loop(){
   
-  lcds[0].blink();
-  delay(500);
+  Serial.print(1);
   
-  buttonState = digitalRead(A1);
-  lcds[0].noBlink();
-  
-  if (buttonState == HIGH) {
-    binary+="1";
-    lcds[0].setCursor(0, 1);
-  	lcds[0].print(binary);
-  } else if (buttonState == LOW){
-    binary+="0";
-    lcds[0].setCursor(0, 1);
-  	lcds[0].print(binary);
-  }
-  delay(500);
-  
-  if (binary.length() == 4 ) {
+  if (checkWinner() != ' ') {
     lcds[0].setCursor(0, 0);
-    lcds[0].print(binary);
-    binary="";
-    lcds[0].setCursor(0, 1);
-  	lcds[0].print("    ");
+  	lcds[0].print(player[!i] + " Won!");
+    
+    delay(5000);
+    lcds[0].setCursor(0, 0);
+  	lcds[0].print("New Game in: 5");
+    delay(1000);
+    lcds[0].setCursor(0, 0);
+  	lcds[0].print("New Game in: 4");
+    delay(1000);
+    lcds[0].setCursor(0, 0);
+  	lcds[0].print("New Game in: 3");
+    delay(1000);
+    lcds[0].setCursor(0, 0);
+  	lcds[0].print("New Game in: 2");
+    delay(1000);
+    lcds[0].setCursor(0, 0);
+  	lcds[0].print("New Game in: 1");
+    delay(1000);
+    lcds[0].setCursor(0, 0);
+    lcds[0].print("                ");
+    lcds[0].setCursor(0, 0);
+    lcds[0].print("GO!");
+    delay(1000);
+    createBoard();
+    if (i==1) {
+      i=0;
+      symbol = 'X';
+    } else {
+      i=1;
+      symbol = 'O';
+    }
+    board[3][3] = {{' ', ' ', ' '}, {' ', ' ', ' '}, {' ', ' ', ' '}};
   }
   
+  while (binary.length()!=4) {
+    lcds[0].setCursor(0, 0);
+  	lcds[0].print(player[i]);
+    
+    lcds[0].blink();
+    delay(1000);
+    buttonState = digitalRead(A1);
+    lcds[0].noBlink();
+
+    if (buttonState == HIGH) {
+      binary+="1";
+      lcds[0].setCursor(0, 1);
+      lcds[0].print(binary);
+    } else if (buttonState == LOW){
+      binary+="0";
+      lcds[0].setCursor(0, 1);
+      lcds[0].print(binary);
+    }
+    delay(1000);
+  }
+  
+  inputValue(binaryToInt(binary), symbol);
+  
+  binary="";
+  lcds[0].setCursor(0, 1);
+  lcds[0].print("    ");
+  
+  if (i==1) {
+    i=0;
+    symbol = 'X';
+  } else {
+    i=1;
+    symbol = 'O';
+  }
   
 }
