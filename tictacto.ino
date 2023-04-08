@@ -116,10 +116,20 @@ int binaryToInt(String binary) {
   return value;
 }
 
-void inputValue(int value, char symbol) {
+bool checkAvailability(int x, int y) {
+  if (board[x][y]==' ') {
+    return true;
+  }
+  return false;
+}
+
+bool inputValue(int value, char symbol) {
   
   switch(value) {
     case 0:
+        if (!checkAvailability(0,0)) {
+            return false;
+        }
     	board[0][0] = symbol;
     	lcds[row[0]].setCursor(0, 1);
     	lcds[row[0]].print("    ");
@@ -127,6 +137,9 @@ void inputValue(int value, char symbol) {
     	lcds[row[0]].print(symbol);
         break;
     case 1:
+    	if (!checkAvailability(0,1)) {
+            return false;
+        }
     	board[0][1] = symbol;
     	lcds[row[0]].setCursor(6, 1);
     	lcds[row[0]].print("    ");
@@ -134,6 +147,9 @@ void inputValue(int value, char symbol) {
     	lcds[row[0]].print(symbol);
         break;
     case 2:
+        if (!checkAvailability(0,2)) {
+            return false;
+        }
     	board[0][2] = symbol;
     	lcds[row[0]].setCursor(12, 1);
     	lcds[row[0]].print("    ");
@@ -141,6 +157,9 @@ void inputValue(int value, char symbol) {
     	lcds[row[0]].print(symbol);
         break;
     case 3:
+        if (!checkAvailability(1,0)) {
+            return false;
+        }
     	board[1][0] = symbol;
     	lcds[row[1]].setCursor(0, 1);
     	lcds[row[1]].print("    ");
@@ -148,6 +167,9 @@ void inputValue(int value, char symbol) {
     	lcds[row[1]].print(symbol);
         break;
     case 4:
+        if (!checkAvailability(1,1)) {
+            return false;
+        }
     	board[1][1] = symbol;
     	lcds[row[1]].setCursor(6, 1);
     	lcds[row[1]].print("    ");
@@ -155,6 +177,9 @@ void inputValue(int value, char symbol) {
     	lcds[row[1]].print(symbol);
         break;
     case 5:
+        if (!checkAvailability(1,2)) {
+            return false;
+        }
     	board[1][2] = symbol;
     	lcds[row[1]].setCursor(12, 1);
     	lcds[row[1]].print("    ");
@@ -162,6 +187,9 @@ void inputValue(int value, char symbol) {
     	lcds[row[1]].print(symbol);
         break;
     case 6:
+        if (!checkAvailability(2,0)) {
+            return false;
+        }
     	board[2][0] = symbol;
     	lcds[row[2]].setCursor(0, 1);
     	lcds[row[2]].print("    ");
@@ -169,6 +197,9 @@ void inputValue(int value, char symbol) {
     	lcds[row[2]].print(symbol);
         break;
     case 7:
+        if (!checkAvailability(2,1)) {
+            return false;
+        }
     	board[2][1] = symbol;
     	lcds[row[2]].setCursor(6, 1);
     	lcds[row[2]].print("    ");
@@ -176,12 +207,18 @@ void inputValue(int value, char symbol) {
     	lcds[row[2]].print(symbol);
         break;
     case 8:
+        if (!checkAvailability(2,2)) {
+            return false;
+        }
     	board[2][2] = symbol;
     	lcds[row[2]].setCursor(12, 1);
     	lcds[row[2]].print("    ");
     	lcds[row[2]].setCursor(column[2], 1);
     	lcds[row[2]].print(symbol);
         break;
+    default:
+    	return false;
+   return true;
   }
 }
 
@@ -209,81 +246,92 @@ void setup(){
   createBoard();
 }
 
-
 int buttonState = 0;
-
 String binary = "";
-
 String player[] = {"Player 1", "Player 2"};
 int i = 0;
 char symbol = 'X';
+int move = 0;
+
+void newGame() {
+  delay(5000);
+  lcds[0].setCursor(0, 0);
+  lcds[0].print("New Game in: 5");
+  delay(1000);
+  lcds[0].setCursor(0, 0);
+  lcds[0].print("New Game in: 4");
+  delay(1000);
+  lcds[0].setCursor(0, 0);
+  lcds[0].print("New Game in: 3");
+  delay(1000);
+  lcds[0].setCursor(0, 0);
+  lcds[0].print("New Game in: 2");
+  delay(1000);
+  lcds[0].setCursor(0, 0);
+  lcds[0].print("New Game in: 1");
+  delay(1000);
+  lcds[0].setCursor(0, 0);
+  lcds[0].print("                ");
+  lcds[0].setCursor(0, 0);
+  lcds[0].print("GO!");
+  delay(1000);
+  createBoard();
+  memset(board, ' ', sizeof(board));
+  if (i==1) {
+    i=0;
+    symbol = 'X';
+  } else {
+    i=1;
+    symbol = 'O';
+  }
+  move=0;
+}
 
 void loop(){
-  
-  Serial.print(1);
   
   if (checkWinner() != ' ') {
     lcds[0].setCursor(0, 0);
   	lcds[0].print(player[!i] + " Won!");
-    
-    delay(5000);
-    lcds[0].setCursor(0, 0);
-  	lcds[0].print("New Game in: 5");
-    delay(1000);
-    lcds[0].setCursor(0, 0);
-  	lcds[0].print("New Game in: 4");
-    delay(1000);
-    lcds[0].setCursor(0, 0);
-  	lcds[0].print("New Game in: 3");
-    delay(1000);
-    lcds[0].setCursor(0, 0);
-  	lcds[0].print("New Game in: 2");
-    delay(1000);
-    lcds[0].setCursor(0, 0);
-  	lcds[0].print("New Game in: 1");
-    delay(1000);
+    newGame();
+  }
+  
+  if (move == 9) {
     lcds[0].setCursor(0, 0);
     lcds[0].print("                ");
-    lcds[0].setCursor(0, 0);
-    lcds[0].print("GO!");
-    delay(1000);
-    createBoard();
-    if (i==1) {
-      i=0;
-      symbol = 'X';
-    } else {
-      i=1;
-      symbol = 'O';
-    }
-    board[3][3] = {{' ', ' ', ' '}, {' ', ' ', ' '}, {' ', ' ', ' '}};
+  	lcds[0].setCursor(0, 0);
+  	lcds[0].print("DRAW!");
+    newGame();
   }
   
-  while (binary.length()!=4) {
-    lcds[0].setCursor(0, 0);
-  	lcds[0].print(player[i]);
-    
-    lcds[0].blink();
-    delay(1000);
-    buttonState = digitalRead(A1);
-    lcds[0].noBlink();
+  bool check = false;
+  
+  while (check == false) {
+    while (binary.length()!=4) {
+      lcds[0].setCursor(0, 0);
+      lcds[0].print(player[i]);
 
-    if (buttonState == HIGH) {
-      binary+="1";
-      lcds[0].setCursor(0, 1);
-      lcds[0].print(binary);
-    } else if (buttonState == LOW){
-      binary+="0";
-      lcds[0].setCursor(0, 1);
-      lcds[0].print(binary);
+      lcds[0].blink();
+      delay(1000);
+      buttonState = digitalRead(A1);
+      lcds[0].noBlink();
+
+      if (buttonState == HIGH) {
+        binary+="1";
+        lcds[0].setCursor(0, 1);
+        lcds[0].print(binary);
+      } else if (buttonState == LOW){
+        binary+="0";
+        lcds[0].setCursor(0, 1);
+        lcds[0].print(binary);
+      }
+      delay(1000);
     }
-    delay(1000);
+
+    check = inputValue(binaryToInt(binary), symbol);
+    binary="";
+    lcds[0].setCursor(0, 1);
+    lcds[0].print("    ");
   }
-  
-  inputValue(binaryToInt(binary), symbol);
-  
-  binary="";
-  lcds[0].setCursor(0, 1);
-  lcds[0].print("    ");
   
   if (i==1) {
     i=0;
@@ -292,5 +340,7 @@ void loop(){
     i=1;
     symbol = 'O';
   }
+  
+  move+=1;
   
 }
