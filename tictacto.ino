@@ -277,13 +277,8 @@ void newGame() {
   delay(1000);
   createBoard();
   memset(board, ' ', sizeof(board));
-  if (i==1) {
-    i=0;
-    symbol = 'X';
-  } else {
-    i=1;
-    symbol = 'O';
-  }
+  i=0;
+  symbol = 'X';
   move=0;
 }
 
